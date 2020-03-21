@@ -58,12 +58,12 @@ public class TcpCenter {
                     m_socket = new Socket(m_ipAddress, m_port);
 //                    socket.setSoTimeout ( 2 * 1000 );//设置超时时间
                     if (isConnected()) {
-                        if (connectedCallback != null) {
-                            connectedCallback.callback();
-                        }
                         outputStream = m_socket.getOutputStream();
                         inputStream = m_socket.getInputStream();
                         Log.i(TAG,"连接成功");
+                        if (connectedCallback != null) {
+                            connectedCallback.callback();
+                        }
                         receive_loop();
                     }else {
                         Log.i(TAG,"连接失败");
@@ -165,6 +165,8 @@ public class TcpCenter {
                 byte[] bt = new byte[count];
                 int readCount = inputStream.read(bt);
 
+                Log.w(TAG, "read() got: "+readCount);
+
 //                获取正确的字节
                 byte[] bs = new byte[readCount];
                 System.arraycopy(bt, 0, bs, 0, readCount);
@@ -219,6 +221,7 @@ public class TcpCenter {
             try {
                 outputStream.write(data);
                 outputStream.flush();
+                Log.w(TAG, "send() done.");
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
